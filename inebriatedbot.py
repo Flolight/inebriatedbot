@@ -55,11 +55,5 @@ def main():
     except:
         print("Error during authentication")
 
-    bot_joke_mode()
+    bot_joke_mode(twitterApi)
     bot_follow_followers_mode(twitterApi)
-
-    
-
-
-
-main()
