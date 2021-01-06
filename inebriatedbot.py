@@ -9,29 +9,34 @@ CONSUMER_SECRET= os.getenv('CONSUMER_SECRET')
 ACCESS_KEY= os.getenv('ACCESS_KEY')
 ACCESS_SECRET= os.getenv('ACCESS_SECRET')
 
-auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
+def twitterAuth():
+    auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+    auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
+    return tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
-api = tweepy.API(auth, wait_on_rate_limit=True,
-    wait_on_rate_limit_notify=True)
+def getJoke(category="Any", blacklistFlags="religious,racist,sexist"):
+    url = f"https://v2.jokeapi.dev/joke/{category}?blacklistFlags={blacklistFlags}"
+    #print(url)
+    return requests.get(url)
 
-# try:
-#     api.verify_credentials()
-#     print("Authentication OK")
-#     #api.update_status("This my first tweet!")
-#     #print(api.me())
-# except:
-#     print("Error during authentication")
+api = twitterAuth() 
 
-response = requests.get("https://v2.jokeapi.dev/joke/Any?blacklistFlags=religious,racist,sexist")
-print(response.json())
-obj = response.json()
+try:
+    api.verify_credentials()
+    print("Authentication OK")
+except:
+    print("Error during authentication")
 
-print(obj)
+
+obj = getJoke(category="Any").json()
+tweet = f"Hey! Let's have a joke...\n[{obj['category']}]\n"
+
+print()
 if obj['type'] != 'twopart':
-    print(obj['joke'])
+    tweet += obj['joke']
 else:
-    print(f"- {obj['setup']}")
-    print(f"- {obj['delivery']}")
+    tweet += f"- {obj['setup']}"
+    tweet += f"\n- {obj['delivery']}"
 
-print(obj['error'])
+print(tweet)
+api.update_status(tweet)
