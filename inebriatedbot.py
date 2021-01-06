@@ -1,5 +1,7 @@
 import tweepy
 import os
+import requests
+import json
 
 # Get values from env variables
 CONSUMER_KEY= os.getenv('CONSUMER_KEY')
@@ -13,10 +15,23 @@ auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
 api = tweepy.API(auth, wait_on_rate_limit=True,
     wait_on_rate_limit_notify=True)
 
-try:
-    api.verify_credentials()
-    print("Authentication OK")
-    #api.update_status("This my first tweet!")
-    print(api.me())
-except:
-    print("Error during authentication")
+# try:
+#     api.verify_credentials()
+#     print("Authentication OK")
+#     #api.update_status("This my first tweet!")
+#     #print(api.me())
+# except:
+#     print("Error during authentication")
+
+response = requests.get("https://v2.jokeapi.dev/joke/Any?blacklistFlags=religious,racist,sexist")
+print(response.json())
+obj = response.json()
+
+print(obj)
+if obj['type'] != 'twopart':
+    print(obj['joke'])
+else:
+    print(f"- {obj['setup']}")
+    print(f"- {obj['delivery']}")
+
+print(obj['error'])
