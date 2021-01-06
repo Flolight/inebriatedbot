@@ -14,8 +14,22 @@ The bot is running on AWS Lambda and uses the [https://v2.jokeapi.dev](https://v
 ## Road map
 
 The roadmap is very abstract for now.
+
 This is a simple experiment. I will try things on this project.
+
 The goal might be to add some AI stuff in the future.
+
+- [x] Make some jokes
+
+- [x] Follow all my followers
+
+- [ ] Have unit tests
+
+- [ ] Answer to people
+
+- [ ] Have my own CI/CD pipeline
+
+- [ ] Accept beers
 
 ## The man behind it
 
