@@ -10,33 +10,56 @@ ACCESS_KEY= os.getenv('ACCESS_KEY')
 ACCESS_SECRET= os.getenv('ACCESS_SECRET')
 
 def twitterAuth():
+    """ Authenticate user using Twitter API generated credentials """
     auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
     auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
     return tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
 def getJoke(category="Any", blacklistFlags="religious,racist,sexist"):
+    """
+    Get a joke from https://v2.jokeapi.dev API
+    """
     url = f"https://v2.jokeapi.dev/joke/{category}?blacklistFlags={blacklistFlags}"
-    #print(url)
     return requests.get(url)
 
-api = twitterAuth() 
+def followAllMyFollowers(twitterApi):
+    """ Follow all the followers of @inebriatedbot """
+    for follower in tweepy.Cursor(twitterApi.followers).items():
+        # print(follower.name)
+        follower.follow()
 
-try:
-    api.verify_credentials()
-    print("Authentication OK")
-except:
-    print("Error during authentication")
+def bot_joke_mode(twitterApi):
+    print("//// bot_joke_mode ////")
+
+    apiResponseJson = getJoke(category="Any").json()
+    tweet = f"Hey! Let's have a joke...\n[{apiResponseJson['category']}]\n"
+
+    if apiResponseJson['type'] != 'twopart':
+        tweet += apiResponseJson['joke']
+    else:
+        tweet += f"- {apiResponseJson['setup']}"
+        tweet += f"\n- {apiResponseJson['delivery']}"
+
+    print(tweet)
+    twitterApi.update_status(tweet)
+
+def bot_follow_followers_mode(twitterApi):
+    print("//// bot_follow_followers_mode ////")
+    followAllMyFollowers(twitterApi)
+
+def main():
+    twitterApi = twitterAuth() 
+    try:
+        twitterApi.verify_credentials()
+        print("Authentication OK")
+    except:
+        print("Error during authentication")
+
+    bot_joke_mode()
+    bot_follow_followers_mode(twitterApi)
+
+    
 
 
-obj = getJoke(category="Any").json()
-tweet = f"Hey! Let's have a joke...\n[{obj['category']}]\n"
 
-print()
-if obj['type'] != 'twopart':
-    tweet += obj['joke']
-else:
-    tweet += f"- {obj['setup']}"
-    tweet += f"\n- {obj['delivery']}"
-
-print(tweet)
-api.update_status(tweet)
+main()
