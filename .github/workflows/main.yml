@@ -50,7 +50,7 @@ jobs:
           #install pip
           python -m pip install --upgrade pip
           pip3 install tweepy -t .
-          zip -r Twitter.zip
+          zip -r Twitter.zip .
           
       - name: Deploy to AWS
         uses: appleboy/lambda-action@v0.0.8
