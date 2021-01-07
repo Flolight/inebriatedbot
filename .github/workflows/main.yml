@@ -43,7 +43,6 @@ jobs:
           profile_name: default
           project_name: inebriatedbot
           runtime: Python3.7
-          s3bucket: inebriatedbot
           
       - name: build
         run: |
@@ -55,5 +54,5 @@ jobs:
       - name: Deploy to AWS
         uses: appleboy/lambda-action@v0.0.8
         with: 
-          function-name: inebriatedbot
+          function_name: inebriatedbot
           zip_file: Twitter.zip
