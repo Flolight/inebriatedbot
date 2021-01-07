@@ -29,7 +29,7 @@ def followAllMyFollowers(twitterApi):
         follower.follow()
 
 def bot_joke_mode(twitterApi):
-    print("//// bot_joke_mode ////")
+    # print("//// bot_joke_mode ////")
 
     apiResponseJson = getJoke(category="Any").json()
     tweet = f"Hey! Let's have a joke...\n[{apiResponseJson['category']}]\n"
@@ -44,10 +44,10 @@ def bot_joke_mode(twitterApi):
     twitterApi.update_status(tweet)
 
 def bot_follow_followers_mode(twitterApi):
-    print("//// bot_follow_followers_mode ////")
+    # print("//// bot_follow_followers_mode ////")
     followAllMyFollowers(twitterApi)
 
-def main():
+def main(event, context):
     twitterApi = twitterAuth() 
     try:
         twitterApi.verify_credentials()
@@ -57,3 +57,8 @@ def main():
 
     bot_joke_mode(twitterApi)
     bot_follow_followers_mode(twitterApi)
+    return {
+        'statusCode': 200,
+        'body': json.dumps('Hello from Lambda!')
+    }
+    
